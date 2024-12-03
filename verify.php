@@ -1,25 +1,17 @@
+
 <?php
 
-include_once("config/base.php");
-include("utils/Encrypt.php");
-
-$verify_code = $_POST['code'];
-$decrypt_data = $_POST['verify_key'];
-$decrypt_key = ENCRYPT_KEY;
-$decrypt_iv = ENCRYPT_IV;
-$real_code = setEncrypt($decrypt_data,$decrypt_key,$decrypt_iv,1);
-
-if ($real_code == $verify_code){
-  $verified_result = true;
-}else{
-  $verified_result = false;
+if (isset($_REQUEST['authcode'])) //判断authcode变量是否被设置
+{
+	session_start();
+	if (strtolower($_REQUEST['authcode']) == $_SESSION['authcode']) //增加验证码的正确性，将用户输入的字符都变成小写
+	{
+		//header('Content-type: text/html; charset=UTF8'); 
+		echo '<font color="#0000CC">输入正确</font>';
+	} else {
+		// header('Content-type: text/html; charset=UTF8'); 
+		echo '<font color="#CC0000"><b>输入错误</b></font>';
+	}
+	exit();
 }
-
-$result = array(
-    'code' => $verify_code,
-    'result' => $verified_result
-);
-$result = json_encode($result,true);
-echo $result;
-
 ?>
